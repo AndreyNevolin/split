@@ -43,6 +43,7 @@ For more information about "split_FindBound()" see comments inside "find_bound.c
 
 ## Building
 There are two options:
+
 1. run ```make``` to build release version of the tool
 2. run ```make debug``` to build debug version of the tool
 
