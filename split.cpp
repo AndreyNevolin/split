@@ -223,7 +223,7 @@ void split_PrintHelp( const char *const prog_name)
             break;
         }
 
-        SPLIT_OUT( usage_options[i]);
+        SPLIT_OUT( "%s", usage_options[i]);
     }
 }
 
@@ -266,6 +266,8 @@ int split_ParseCmdLine( int argc, char *argv[], split_Opts_t *opts)
 
     while ( 1 )
     {
+        int curr_optind = optind;
+
         getopt_res = getopt_long( argc, argv, split_short_options_desc.c_str(),
                                   split_long_options_desc, &long_opt_index);
 
@@ -390,14 +392,14 @@ int split_ParseCmdLine( int argc, char *argv[], split_Opts_t *opts)
             case ':':
                 snprintf( buff, sizeof( buff),
                          "Mandatory argument is missing for \"%s\"",
-                         argv[optind - 1]);
+                         argv[curr_optind]);
                 split_ExitWithAssist( buff, prog_name.c_str());
 
                 break;
 
             /* Unknow option */
             case '?':
-                snprintf( buff, sizeof( buff), "Unknown option: %s", argv[optind - 1]);
+                snprintf( buff, sizeof( buff), "Unknown option: %s", argv[curr_optind]);
                 split_ExitWithAssist( buff, prog_name.c_str());
 
                 break;

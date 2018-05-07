@@ -16,7 +16,7 @@ GCC = g++ -std=c++0x -Wall $(BUILD_FLAGS)
 default : BUILD_FLAGS += -s
 default : ${FULLTARGET}
 
-debug : BUILD_FLAGS += -DSPLIT_DEBUG -g -rdynamic
+debug : BUILD_FLAGS += -DSPLIT_DEBUG -g
 debug : ${FULLTARGET}
 
 clean:
