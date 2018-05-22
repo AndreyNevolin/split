@@ -99,13 +99,13 @@ static inline void split_PrintStack()
 
 /**
  * Wrapper around "strerror_r()" aimed at making calls to
- * "strerror_r()" more compact
+ * "strerror_r()" more compact and manageble
  */
-static inline char *SPLIT_STRERROR_R( char *buff)
+static inline char *SPLIT_STRERROR_R( char *buff, size_t size)
 {
     SPLIT_ASSERT( buff);
 
-    return strerror_r( errno, buff, sizeof( buff));
+    return strerror_r( errno, buff, size);
 }
 
 /* Value that should be returned by "split_FoundBound()" function if
@@ -493,13 +493,15 @@ int64_t split_GetInputSize( int fd)
 
     if ( input_size == -1 )
     {
-        SPLIT_ERROR( "Cannot seek input file: %s", SPLIT_STRERROR_R( err_msg));
+        SPLIT_ERROR( "Cannot seek input file: %s",
+                     SPLIT_STRERROR_R( err_msg, sizeof( err_msg)));
     }
 
     /* Return to the beginning of the file */
     if ( lseek( fd, 0, SEEK_SET) == -1 )
     {
-        SPLIT_ERROR( "Cannot seek input file: %s", SPLIT_STRERROR_R( err_msg));
+        SPLIT_ERROR( "Cannot seek input file: %s",
+                     SPLIT_STRERROR_R( err_msg, sizeof( err_msg)));
     }
 
     return input_size;
@@ -525,7 +527,7 @@ static int split_StartNewPiece( const std::string & dir_name,
     if ( output_fd == -1 )
     {
         SPLIT_ERROR( "Cannot create output file \"%s\": %s", output_name.c_str(),
-                     SPLIT_STRERROR_R( err_msg));
+                     SPLIT_STRERROR_R( err_msg, sizeof( err_msg)));
     }
 
     return output_fd;
@@ -541,7 +543,8 @@ static int split_FinalizePiece( int fd, int64_t piece_num)
 
     if ( fsync( fd) == -1 )
     {
-        SPLIT_ERROR( "Cannot sync output file: %s", SPLIT_STRERROR_R( err_msg));
+        SPLIT_ERROR( "Cannot sync output file: %s",
+                     SPLIT_STRERROR_R( err_msg, sizeof( err_msg)));
     }
 
     close( fd);
@@ -617,7 +620,7 @@ static int64_t split_FillUpperBuffHalfFromInput( int fd,
     if ( bytes_read == -1 )
     {
         SPLIT_ERROR( "Cannot read data from the input file: %s",
-                     SPLIT_STRERROR_R( err_msg));
+                     SPLIT_STRERROR_R( err_msg, sizeof( err_msg)));
     } else if ( bytes_read != io_size )
     {
         SPLIT_ERROR( "Read %ld bytes from the input file. %ld bytes were expected. "
@@ -638,7 +641,8 @@ int64_t split_WriteOutput( int fd, char *buff, int64_t data_start, int64_t data_
 
     if ( bytes_written == -1 )
     {
-        SPLIT_ERROR( "Cannot write data to output file: %s", SPLIT_STRERROR_R( err_msg));
+        SPLIT_ERROR( "Cannot write data to output file: %s",
+                     SPLIT_STRERROR_R( err_msg, sizeof( err_msg)));
     } else if ( bytes_written != io_size )
     {
         SPLIT_ERROR( "Written %ld bytes to an output file. %ld bytes were expected. "
@@ -757,7 +761,7 @@ int split_SplitSource( const split_Opts_t* const opts)
     if ( fd_input == -1 )
     {
         SPLIT_ERROR( "Cannot open file \"%s\": %s", (opts->input_path).c_str(),
-                     SPLIT_STRERROR_R( err_msg));
+                     SPLIT_STRERROR_R( err_msg, sizeof( err_msg)));
     }
 
     /* Calculate number of digits needed to write down number of pieces.
