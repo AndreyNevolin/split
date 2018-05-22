@@ -99,7 +99,7 @@ static inline void split_PrintStack()
 
 /**
  * Wrapper around "strerror_r()" aimed at making calls to
- * "strerror_r()" more compact and manageble
+ * "strerror_r()" more compact and manageable
  */
 static inline char *SPLIT_STRERROR_R( char *buff, size_t size)
 {
